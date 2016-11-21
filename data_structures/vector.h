@@ -2,6 +2,7 @@
 #define BIGLIB_DATA_STRUCTRES_VECTOR_H_
 
 #include <cassert>
+#include <iostream>
 
 namespace big {
 
@@ -23,7 +24,7 @@ class vector {
   }
 
   vector<T>& operator=(const vector<T>& other) {
-    delete data_;
+    delete[] data_;
     data_ = new T[other.capacity_];
     end_ = other.end_;
     capacity_ = other.capacity_;
@@ -34,7 +35,7 @@ class vector {
   }
 
   ~vector() {
-    delete data_;
+    delete[] data_;
   }
 
   // Capacity.
@@ -48,8 +49,9 @@ class vector {
       for (int i = 0; i < end_; ++i) {
         data[i] = data_[i];
       }
-      delete data_;
+      delete[] data_;
       data_ = data;
+      capacity_ = n;
     }
   }
 
@@ -58,13 +60,10 @@ class vector {
     if (capacity_ < n) {
       reserve(n);
     }
-    for (int i = current_size; i < capacity_; ++i) {
+    for (int i = current_size; i < n; ++i) {
       data_[i] = val;
     }
-  }
-
-  void shrink_to_fit() {
-    resize(end_);
+    end_ = n;
   }
 
   // Element access.
@@ -110,13 +109,15 @@ class vector {
     for (int i = 0; i < n; ++i) {
       data[i] = val;
     }
-    delete data_;
+    delete[] data_;
     data_ = data;
+    capacity_ = n;
+    end_ = n;
   }
 
   void push_back(const T& val) {
     if (end_ == capacity_) {
-      reserve(capacity_ * 2);
+      reserve(capacity_ == 0 ? 1 : capacity_ * 2);
     }
     data_[end_] = val;
     ++end_;
@@ -130,7 +131,7 @@ class vector {
   void insert(unsigned int pos, const T& val) {
     assert(pos <= end_);
     if (end_ == capacity_) {
-      reserve(capacity_ * 2);
+      reserve(capacity_ == 0 ? 1 : capacity_ * 2);
     }
     for (int i = end_; i > pos; --i) {
       data_[i] = data_[i - 1];
@@ -150,7 +151,7 @@ class vector {
   void clear() {
     end_ = 0;
     capacity_ = 0;
-    delete data_;
+    delete[] data_;
     data_ = new T[0];
   }
 
