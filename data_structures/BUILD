@@ -1,13 +1,14 @@
 cc_library(
     name = "vector",
     hdrs = ["vector.h"],
-    visibility = ["//data_strctures:__pkg__"],
 )
 
-cc_binary(
-    name = "tests",
-    srcs = ["tests.cc"],
+cc_test(
+    name = "vector_test",
+    srcs = ["vector_test.cc"],
+    copts = ["-Igoogletest/include"],
     deps = [
         ":vector",
+        "@gtest//:main"
     ],
 )
